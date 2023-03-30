@@ -20,7 +20,7 @@ def open_file(event):
         with open("file_path.txt", mode="w") as file:
             file.write(fn)
 # 4000 x 6000
-        base_width = 400
+        base_width = 350
         image = Image.open(fn)
         wpercent = (base_width / float(image.size[0]))
         # 0.075

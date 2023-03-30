@@ -2,49 +2,60 @@ import os.path
 from tkinter import *
 from tkinter.filedialog import asksaveasfile
 from PIL import Image, ImageFont, ImageDraw
+from tkinter import colorchooser
 
+color_code = '#ffffff'
 extension = 'png'
-x_position = 150
+x_position = 500
 y_position = 150
 
 try:
-    with open('file_path.txt') as file:
-        file_name = file.read()
+    with open('file_path.txt') as file1:
+        file_name1 = file1.read()
 
-    original_img = Image.open(file_name)
+    original_img1 = Image.open(file_name1)
 except FileNotFoundError:
     pass
 
 
-def down_key(event):
-    global y_position
-    if original_img.size[1] > 1000:
-        y_position += 50
+def choose_color():
+    global color_code
+    try:
+        color_code = colorchooser.askcolor(title="Choose color")[1]
+        add_watermark()
+    except ValueError:
+        pass
 
-    y_position += 15
+
+def down_key(*args):
+    global y_position
+    if original_img1.size[1] > 2000:
+        y_position -= 100
+
+    y_position -= 15
     add_watermark()
 
 
 def up_key(event):
     global y_position
-    if original_img.size[1] > 1000:
-        y_position += 50
-    y_position -= 15
+    if original_img1.size[1] > 2000:
+        y_position += 100
+    y_position += 15
     add_watermark()
 
 
 def left_key(event):
     global x_position
-    if original_img.size[0] > 1000:
-        x_position += 50
+    if original_img1.size[0] > 2000:
+        x_position -= 100
     x_position -= 15
     add_watermark()
 
 
 def right_key(event):
     global x_position
-    if original_img.size[0] > 1000:
-        x_position += 50
+    if original_img1.size[0] > 2000:
+        x_position += 100
     x_position += 15
     add_watermark()
 
@@ -73,15 +84,15 @@ def add_watermark():
     draw = ImageDraw.Draw(original_img)
 
     # add watermark
-    draw.text((x_position, y_position), text=str(watermark_entry.get()), fill=str(color_clicked.get()),
+    draw.text((x_position, h - y_position), text=str(watermark_entry.get()), fill=str(color_code),
               font=watermark_font,
               anchor='ms', align='left')
     original_img.save(f'saved_image.{extension}')
 
     base_width = 350
     image = Image.open(f'saved_image.{extension}')
-    wpercent = (base_width / float(image.size[0]))
-    hsize = int((float(image.size[1]) * float(wpercent)))
+    w_percent = (base_width / float(image.size[0]))
+    hsize = int((float(image.size[1]) * float(w_percent)))
     img1 = image.resize((base_width, hsize), Image.Resampling.LANCZOS)
     img1.save('watermark_show.png', format='PNG')
 
@@ -123,13 +134,14 @@ title = PhotoImage(file='assets/Asset 3title.png')
 canvas1.create_image(387.5, 58, image=title)
 
 canvas1.grid(row=0, column=0, columnspan=2)
-
-canvas2 = Canvas(width=350, height=400, highlightthickness=0, background="#ffffff")
+text = Label(text='Image Preview:', font=('Product Sans', 15, 'normal'), background='#ffffff')
+text.grid(row=1, column=0, sticky=SW, padx=20)
+canvas2 = Canvas(width=350, height=480, highlightthickness=0, background="#ffffff")
 
 uploaded_img = PhotoImage(file='show_img.png')
-canvas2.create_image(175, 200, image=uploaded_img)
+canvas2.create_image(175, 240, image=uploaded_img)
 
-canvas2.grid(row=1, rowspan=5, column=0)
+canvas2.grid(row=2, rowspan=5, column=0)
 
 watermark_label = Label(text='Watermark:', font=('Product Sans', 12, 'normal'), background="#ffffff")
 watermark_label.grid(row=1, column=1, sticky=NW)
@@ -138,47 +150,30 @@ watermark_entry = Entry(width=50, background='#f2f2f2')
 watermark_entry.focus()
 watermark_entry.grid(row=2, column=1, sticky=NW, pady=5)
 
-color_options = [
-    "white",
-    "black",
-    "red",
-    'darkred',
-    "yellow",
-    'darkyellow',
-    'orange',
-    'darkorange',
-    "green",
-    'darkgreen',
-    "blue",
-    'darkblue',
-    "violet",
-    'darkviolet',
-    "grey",
-    "pink",
-    "brown",
-    "gold",
-    "silver"
-]
+watermark_label = Label(text='Text Color:', font=('Product Sans', 12, 'normal'), background="#ffffff")
+watermark_label.grid(row=4, column=1, sticky=NW)
 
-color_clicked = StringVar()
-color_clicked.set('white')
+# font_color = OptionMenu(window, color_clicked, *color_options)
 
-font_color = OptionMenu(window, color_clicked, *color_options)
-font_color.grid(row=4, column=1, sticky=NW, pady=10)
+font_color = Button(width=12, text="Select Color", font=('Product Sans', 11, "normal"), command=choose_color,
+                    background='#ffd418', foreground='#000000', disabledforeground='#919191', relief='flat',
+                    overrelief='flat', state='normal')
+
+font_color.grid(row=5, column=1, sticky=NW, pady=10)
 
 canvas3 = Canvas(width=300, height=280, background='#ffffff', highlightthickness=0)
-canvas3.grid(row=5, column=1, sticky=NW)
+canvas3.grid(row=6, column=1, sticky=NW)
 
 add_watermark_btn = Button(width=16, text="Add Watermark", font=('Product Sans', 13, "bold"), background='#ffd418',
                            foreground='#000000', disabledforeground='#919191', relief='flat', overrelief='flat',
                            command=add_watermark, state='normal')
 
-add_watermark_btn.grid(row=6, column=0, pady=20, sticky=N)
+add_watermark_btn.grid(row=7, column=0, pady=20, sticky=N)
 
 save_file_btn = Button(width=16, text='Save File', font=('Product Sans', 13, 'bold'), background='#ffd418',
                        foreground='#000000', disabledforeground='#919191', relief='flat', overrelief='flat',
                        command=save_file, state='disabled')
 
-save_file_btn.grid(row=6, column=1, pady=20, sticky=N)
+save_file_btn.grid(row=7, column=1, pady=20, sticky=N)
 
 window.mainloop()
