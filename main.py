@@ -2,7 +2,8 @@ import time
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from PIL import Image
-#
+
+
 extension = 'png'
 
 
@@ -19,76 +20,15 @@ def open_file(event):
 
         with open("file_path.txt", mode="w") as file:
             file.write(fn)
-# 4000 x 6000
         base_width = 350
         image = Image.open(fn)
-        wpercent = (base_width / float(image.size[0]))
-        # 0.075
-        hsize = int((float(image.size[1]) * float(wpercent)))
-        #
+        w_percent = (base_width / float(image.size[0]))
+        hsize = int((float(image.size[1]) * float(w_percent)))
         img1 = image.resize((base_width, hsize), Image.Resampling.LANCZOS)
         img1.save('show_img.png', format='PNG')
-        # img.config(file=f'show_img.png')
-        # start_button.config(text='Add watermark', command=add_watermark)
         window.destroy()
         time.sleep(1)
         import page1
-
-#
-# def add_watermark():
-#     with open('file_path.txt') as file:
-#         file_name = file.read()
-#
-#     # watermark
-#     img2 = Image.open(file_name)
-#     draw = ImageDraw.Draw(img2)
-#
-#     w, h = img2.size
-#     x, y = int(w / 2), int(h / 2)
-#
-#     if x > y:
-#         font_size = y
-#     elif y > x:
-#         font_size = x
-#     else:
-#         font_size = x
-#
-#     font = ImageFont.truetype('arial.ttf', int(font_size/6))
-#
-#     # add watermark+
-#     draw.text((w, h), 'Watermark', fill=(255, 255, 255), font=font, anchor='ms')
-#     img2.save(f'saved_image.{extension}')
-#
-#     base_width = 400
-#     image = Image.open(f'saved_image.{extension}')
-#     wpercent = (base_width / float(image.size[0]))
-#     hsize = int((float(image.size[1]) * float(wpercent)))
-#     img1 = image.resize((base_width, hsize), Image.Resampling.LANCZOS)
-#     img1.save('watermark_show.png', format='PNG')
-#     # img.config(file=f'watermark_show.png')
-#
-#     start_button.config(text='Save Image', command=save_file)
-#
-#     print('watermark added')
-#
-#
-# def save_file():
-#     files = [('All Files', '*'),
-#              ('PNG File', '.png'),
-#              ('JPG File', '.jpg')]
-#
-#     image = Image.open(f'saved_image.{extension}')
-#     file = asksaveasfile(defaultextension=f'.{extension}', filetypes=files)
-#
-#     if file is None:
-#         return
-#
-#     elif file:
-#         abs_path = os.path.abspath(file.name)
-#         # out = Image.alpha_composite(image)
-#         image.save(abs_path)
-#
-#     print("file saved")
 
 
 window = Tk()
